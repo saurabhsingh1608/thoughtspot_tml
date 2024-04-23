@@ -4,6 +4,7 @@ from collections.abc import Collection
 from dataclasses import asdict, dataclass, fields, is_dataclass
 from typing import TYPE_CHECKING
 import json
+import keyword
 import pathlib
 import re
 import typing
@@ -67,6 +68,7 @@ def recursive_complex_attrs_to_dataclasses(instance: Any) -> None:
 
             for item in value:
                 if is_dataclass(field_type) and isinstance(item, dict):
+                    item = _sanitize_reserved_keyword_keys(item)
                     item = field_type(**item)
 
                 new_value.append(item)  # type: ignore[attr-defined]
@@ -82,6 +84,13 @@ def recursive_complex_attrs_to_dataclasses(instance: Any) -> None:
             continue
 
         setattr(instance, field.name, new_value)
+
+
+def _sanitize_reserved_keyword_keys(mapping: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Replace reserved keywords with a trailing sunder.
+    """
+    return {(f"{k}_" if keyword.iskeyword(k) else k): v for k, v in mapping.items()}
 
 
 def _recursive_remove_null(mapping: Dict[str, Any]) -> Dict[str, Any]:
