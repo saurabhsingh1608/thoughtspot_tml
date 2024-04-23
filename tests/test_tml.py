@@ -1,12 +1,12 @@
-from thoughtspot_tml.exceptions import TMLExtensionWarning
-from thoughtspot_tml import Connection
-from thoughtspot_tml import Table, View, SQLView, Worksheet
-from thoughtspot_tml import Answer, Liveboard, Pinboard
-from ward import test
+from __future__ import annotations
+
 import warnings
 
-from . import _const
+from thoughtspot_tml import Answer, Connection, Liveboard, Pinboard, SQLView, Table, View, Worksheet
+from thoughtspot_tml.exceptions import TMLExtensionWarning
+from ward import test
 
+from . import _const
 
 for tml_cls, tml_type_name in (
     (Connection, "connection"),
@@ -22,9 +22,7 @@ for tml_cls, tml_type_name in (
     @test("{tml_cls.__name__} roundtrips")
     def _(tml_cls=tml_cls, tml_type_name=tml_type_name):
         path = _const.DATA_DIR / f"DUMMY.{tml_type_name}.tml"
-        temp = _const.TEMP_DIR / f"DUMMY.{tml_type_name}.tml"
-        tml_cls.load(path).dump(temp)
-        assert path.read_text() == temp.read_text()
+        assert path.read_text() == tml_cls.load(path).dumps()
 
     @test("{tml_cls.__name__} type name is '{tml_type_name}'")
     def _(tml_cls=tml_cls, tml_type_name=tml_type_name):
