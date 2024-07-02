@@ -199,16 +199,15 @@ class Worksheet(_tml.TML):
     def name(self) -> str:
         return self.worksheet.name
     
-    # we are now handling this in another class "Model"
-    # @property
-    # def is_model(self) -> bool:
-    #     """
-    #     Determines if the TML object is the newer Worksheet, a Model.
+    @property
+    def is_model(self) -> bool:
+        """
+        Determines if the TML object is the newer Worksheet, a Model.
 
-    #     Further reading:
-    #       https://docs.thoughtspot.com/cloud/latest/models
-    #     """
-    #     return self.worksheet.schema is not None
+        Further reading:
+          https://docs.thoughtspot.com/cloud/latest/models
+        """
+        return self.worksheet.schema is not None
 
     @classmethod
     def _loads(cls, tml_document: str) -> Dict[str, Any]:
